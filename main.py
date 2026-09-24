@@ -29,7 +29,33 @@ async def run_sync_pipeline():
         # 2. GitHub Bulk Scraper
         github_services = await parse_free_for_dev()
         
-        # Upsert and diff logic
+        # Upsert targeted data first
+        for data in targeted_data:
+            statement = select(ServiceItem).where(ServiceItem.name == data["service_name"])
+            existing = session.exec(statement).first()
+            new_hash = compute_content_hash(data["raw_text"])
+            
+            if existing:
+                existing.free_tier_limits = data["raw_text"]
+                existing.pricing_url = data["url"]
+                existing.content_hash = new_hash
+                existing.last_scraped_at = datetime.now(timezone.utc)
+                existing.last_verified_at = datetime.now(timezone.utc)
+                session.add(existing)
+            else:
+                new_svc = ServiceItem(
+                    name=data["service_name"],
+                    category=ServiceCategory.OTHER,
+                    short_description="Directly scraped pricing",
+                    free_tier_limits=data["raw_text"],
+                    official_url=data["url"],
+                    pricing_url=data["url"],
+                    content_hash=new_hash,
+                    last_scraped_at=datetime.now(timezone.utc)
+                )
+                session.add(new_svc)
+
+        # Upsert and diff logic for Github services
         for new_svc in github_services:
             # Check if exists
             statement = select(ServiceItem).where(ServiceItem.name == new_svc.name)
