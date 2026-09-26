@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+httpx
+beautifulsoup4
+sqlmodel
+psycopg2-binary
+pytest
+pytest-asyncio
+ruff
+slowapi

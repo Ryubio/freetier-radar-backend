@@ -1,56 +1,210 @@
-# ⚡ FreeTier Radar - Backend & Scraper Engine
+# 📡 FreeTier Radar
 
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688.svg?style=flat&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
-[![Python](https://img.shields.io/badge/Python-3.11+-3776AB.svg?style=flat&logo=python&logoColor=white)](https://python.org)
-[![SQLite](https://img.shields.io/badge/Database-SQLite%20%2F%20SQLModel-003B57.svg?style=flat&logo=sqlite&logoColor=white)](https://sqlmodel.tiangolo.com)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+> **Discover, track, and build with the most generous free tiers on the internet.**
 
-**FreeTier Radar Backend**, geliştirici araçları, bulut servisleri ve yapay zeka sağlayıcılarının ücretsiz katman (free-tier) kotalarını dinamik olarak takip eden, kotası düşürülen (deprecate edilen) veya kısıtlanan servisleri tespit eden kurumsal seviye bir veri kazıma ve API servisidir.
+A developer/indie-hacker companion app that scans, aggregates, and organizes generous free tiers across cloud hosts, AI APIs, databases, auth engines, and creative assets. Highlights "No Credit Card Required" services and alerts you when pricing tiers change.
 
 ---
 
-## 🎯 Özellikler
+## 🏗️ Architecture
 
-* **Çift Katmanlı Veri Kazıma (Dual-layer Scraper Engine):**
-  * **GitHub Topluluk Kaynağı:** `ripienaar/free-for-dev` deposunu asenkron ayrıştırıp 300+ servisi kategorize eder.
-  * **Hedefli Kazıyıcılar (Targeted Scrapers):** Supabase, Vercel, Render gibi kritik platformların resmi fiyatlandırma sayfalarını `BeautifulSoup4` ve `httpx` ile doğrudan kazır.
-* **Akıllı Diff & Deprecation Motoru:**
-  * Servislerin önceki kotalarıyla yeni kotalarını SHA-256 hash'leri ve regex desenleriyle karşılaştırır.
-  * Kota düşüşlerini (`100GB -> 50GB` gibi) yakalar ve `old_limit` / `new_limit` farklarını `TierAlert` modeliyle mobil uygulamaya sunar.
-* **Arka Plan Zamanlayıcı (APScheduler):**
-  * Servis kotalarını 12 saatlik aralıklarla otomatik doğrular ve veritabanını güncel tutar.
-* **Canlı Tetikleyici (Manual Trigger):**
-  * `POST /api/v1/sync` endpoint'i üzerinden anında manuel tarama başlatma imkanı.
+```
+freetier-radar/
+├── backend/                        # Python FastAPI backend
+│   ├── main.py                     # FastAPI app + endpoints + scheduler
+│   ├── models.py                   # SQLModel ORM + Pydantic schemas
+│   ├── database.py                 # SQLite engine + session management
+│   ├── diff_engine.py              # Content hashing + change detection
+│   ├── seed_data.py                # 25+ real service entries
+│   ├── requirements.txt            # Python dependencies
+│   └── scrapers/
+│       └── github_freedev_parser.py  # free-for-dev markdown parser
+│
+└── mobile/                         # Flutter Android app
+    ├── pubspec.yaml
+    ├── analysis_options.yaml
+    └── lib/
+        ├── main.dart               # App entry + bottom navigation
+        ├── theme/
+        │   └── app_theme.dart      # Catppuccin Mocha dark theme
+        ├── models/
+        │   └── service_model.dart  # Dart data classes
+        ├── services/
+        │   └── api_service.dart    # Dio HTTP client
+        ├── providers/
+        │   └── services_provider.dart  # Riverpod state management
+        ├── screens/
+        │   ├── home_screen.dart           # Explore feed
+        │   ├── alerts_screen.dart         # Change timeline
+        │   └── stack_calculator_screen.dart  # Indie Stack Builder
+        └── widgets/
+            ├── service_card.dart          # Service list card
+            ├── service_detail_modal.dart  # Bottom sheet detail view
+            └── filter_bar.dart            # Category filter chips
+```
 
 ---
 
-## 🛠️ Mimari & Teknolojiler
+## 🚀 Quick Start
 
-* **Framework:** FastAPI
-* **Veritabanı & ORM:** SQLite & SQLModel (SQLAlchemy 2.0 tabanlı)
-* **Web Kazıma:** `httpx` (Asenkron HTTP istemcisi), `beautifulsoup4`
-* **Görev Zamanlayıcı:** `APScheduler` (BackgroundScheduler)
-* **Sunucu:** Uvicorn (ASGI)
-
----
-
-## 🚀 Yerel Kurulum & Çalıştırma
-
-Projeyi yerel ortamınızda ayağa kaldırmak için:
+### Backend
 
 ```bash
-# 1. Repoyu klonlayın
-git clone [https://github.com/Ryubio/freetier-radar-backend.git](https://github.com/Ryubio/freetier-radar-backend.git)
-cd freetier-radar-backend
+cd backend/
 
-# 2. Sanal ortamı kurun ve bağımlılıkları yükleyin
+# Create virtual environment
 python3 -m venv venv
 source venv/bin/activate
+
+# Install dependencies
 pip install -r requirements.txt
 
-# 3. Veritabanını oluşturun ve ilk verileri tohumlayın
-python3 seed_data.py
+# Seed the database with 25+ real services
+python seed_data.py
 
-# 4. Sunucuyu başlatın
+# Start the API server
 uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-📡 REST API Endpoint'leriMetotEndpointAçıklamaGET/api/v1/servicesTüm ücretsiz servisleri listeler (category, no_credit_card, search filtreleri desteklenir).GET/api/v1/services/{id}Belirli bir servisin detaylı kota bilgilerini getirir.GET/api/v1/alerts/deprecationsKota düşüşü veya kısıtlama yaşayan servislerin eski/yeni limit farklarını listeler.POST/api/v1/syncKazıyıcı motoru manuel olarak tetikler ve verileri günceller.GET/docsEtkileşimli Swagger UI dökümantasyonu.🌐 Dağıtım (Production)Bu backend, Render.com üzerinde ücretsiz container mimarisinde 7/24 çalışacak şekilde yapılandırılmıştır.Build Command: pip install -r requirements.txtStart Command: uvicorn main:app --host 0.0.0.0 --port $PORT
+```
+
+The API is now available at `http://localhost:8000`. Try:
+- `GET http://localhost:8000/api/v1/services` — list all services
+- `GET http://localhost:8000/api/v1/services?category=AI_ML` — filter by category
+- `GET http://localhost:8000/api/v1/services?no_credit_card=true` — no CC required
+- `GET http://localhost:8000/api/v1/services?query=supabase` — search
+- `GET http://localhost:8000/api/v1/alerts/deprecations` — change alerts
+- `POST http://localhost:8000/api/v1/admin/scrape` — trigger manual scrape
+- Interactive docs: `http://localhost:8000/docs`
+
+### Mobile App (Flutter)
+
+```bash
+cd mobile/
+
+# Install dependencies
+flutter pub get
+
+# Run on connected device / emulator (debug)
+flutter run
+
+# Build debug APK
+flutter build apk --debug
+
+# Build release APK (fat APK, all ABIs)
+flutter build apk --release
+
+# Build release APK (split per ABI — recommended for distribution)
+flutter build apk --release --split-per-abi
+```
+
+APKs will be generated at:
+```
+mobile/build/app/outputs/flutter-apk/
+├── app-arm64-v8a-release.apk    (most modern phones)
+├── app-armeabi-v7a-release.apk  (older phones)
+└── app-x86_64-release.apk      (emulators)
+```
+
+> **Note:** The Flutter app defaults to `http://10.0.2.2:8000` as the API base URL,
+> which maps to the host machine's localhost from the Android emulator. For physical
+> devices, update the `defaultBaseUrl` in `lib/services/api_service.dart` to your
+> server's IP address.
+
+---
+
+## 📱 Features
+
+### 1. Explore Feed
+- Search bar with 300ms debounce
+- "Radar of the Week" spotlight banner
+- Category filter chips (AI/ML, Databases, Hosting, Auth, Storage, APIs, Creative)
+- "No CC Required" toggle filter
+- Pull-to-refresh
+
+### 2. Service Cards
+- Category badge with icon
+- Short description (2-line truncation)
+- Free tier limits in monospaced code style (JetBrains Mono)
+- Status chips: "No CC" (green), "Hard Cap" (blue), "Updated" (orange), "Deprecated" (red)
+- Bookmark toggle + Direct link button
+
+### 3. Service Detail Modal
+- Draggable bottom sheet with full service information
+- Credit card warning banner
+- Change log display
+- Hard cap indicator
+- Actions: Visit Site, Copy Link, Bookmark, Share
+
+### 4. Deprecation Alerts
+- Timeline-style display of tier changes
+- Color-coded: 🔴 Downgrade, 🟢 Upgrade, 🟠 Policy Change
+- Relative timestamps
+
+### 5. Indie Stack Calculator
+- Select Frontend Host + Database + Auth Provider
+- Dropdown with no-CC indicator per service
+- Combined summary with warnings
+- "Export as Markdown" to share sheet
+- "Save Stack" to bookmarks
+
+---
+
+## 🎨 Design System
+
+**Catppuccin Mocha** dark theme:
+
+| Role | Color | Hex |
+|------|-------|-----|
+| Surface | Base | `#1E1E2E` |
+| Background | Mantle | `#181825` |
+| Card | Surface0 | `#313244` |
+| Primary | Blue | `#89B4FA` |
+| Secondary | Green | `#A6E3A1` |
+| Error | Red | `#F38BA8` |
+| Warning | Peach | `#FAB387` |
+| Text | Text | `#CDD6F4` |
+| Subtext | Subtext0 | `#A6ADC8` |
+
+- **Body text:** Inter
+- **Code/limits:** JetBrains Mono
+
+---
+
+## 🔧 Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Mobile | Flutter 3.x, Dart 3.1+ |
+| State | Riverpod (flutter_riverpod) |
+| HTTP | Dio 5.x |
+| Backend | Python 3.11+, FastAPI |
+| Database | SQLite via SQLModel |
+| Scraping | httpx + regex parsing |
+| Scheduler | APScheduler (12-hour intervals) |
+
+---
+
+## 📋 API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/v1/services` | List services (paginated, filterable) |
+| GET | `/api/v1/services/{id}` | Get single service |
+| GET | `/api/v1/alerts/deprecations` | List recent changes |
+| POST | `/api/v1/admin/scrape` | Trigger manual scrape |
+
+### Query Parameters for `/api/v1/services`
+
+| Param | Type | Description |
+|-------|------|-------------|
+| `category` | string | Filter by category enum |
+| `no_credit_card` | bool | Only show no-CC services |
+| `query` | string | Search name + description |
+| `status` | string | Filter by ACTIVE/DEPRECATED/CHANGED_RECENTLY |
+| `page` | int | Page number (default 1) |
+| `page_size` | int | Items per page (default 20, max 100) |
+
+---
+
+## 📜 License
+
+MIT — built for the indie hacker community.

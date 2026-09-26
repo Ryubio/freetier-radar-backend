@@ -1,0 +1,15 @@
+name: Scraper Cron Job
+
+on:
+  schedule:
+    - cron: '0 */12 * * *'
+  workflow_dispatch:
+
+jobs:
+  trigger_sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render Sync API
+        run: |
+          curl --fail -X POST "${{ secrets.RENDER_API_URL }}/api/v1/sync" \
+          -H "X-Sync-Token: ${{ secrets.SYNC_SECRET_KEY }}"
