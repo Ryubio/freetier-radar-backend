@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../theme/app_theme.dart';
+import '../l10n/app_strings.dart';
 import '../providers/services_provider.dart';
 
 class SettingsState {
@@ -27,14 +28,14 @@ class SettingsState {
 class SettingsNotifier extends StateNotifier<SettingsState> {
   SettingsNotifier()
       : super(SettingsState(
-            apiBaseUrl: 'https://api.freetier.example.com',
+            apiBaseUrl: 'https://freetier-radar-backend.onrender.com',
             appTheme: 'Catppuccin Mocha')) {
     _loadSettings();
   }
 
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
-    final url = prefs.getString('api_base_url') ?? 'https://api.freetier.example.com';
+    final url = prefs.getString('api_base_url') ?? 'https://freetier-radar-backend.onrender.com';
     final theme = prefs.getString('app_theme') ?? 'Catppuccin Mocha';
     state = state.copyWith(apiBaseUrl: url, appTheme: theme);
   }
@@ -57,7 +58,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     await prefs.remove('app_theme');
     await prefs.remove('bookmarked_services');
     state = SettingsState(
-        apiBaseUrl: 'https://api.freetier.example.com',
+        apiBaseUrl: 'https://freetier-radar-backend.onrender.com',
         appTheme: 'Catppuccin Mocha');
   }
 }
@@ -114,6 +115,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final locale = ref.watch(settingsProvider).locale;
     final settings = ref.watch(settingsProvider);
 
     return Scaffold(

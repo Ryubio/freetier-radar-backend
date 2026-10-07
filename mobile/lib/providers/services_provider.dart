@@ -11,22 +11,26 @@ class AppSettings {
   final String apiBaseUrl;
   final AppThemeType themeType;
   final bool hasSeenOnboarding;
+  final String locale;
 
   const AppSettings({
     this.apiBaseUrl = 'https://freetier-radar-backend.onrender.com',
     this.themeType = AppThemeType.catppuccin,
     this.hasSeenOnboarding = false,
+    this.locale = "en",
   });
 
   AppSettings copyWith({
     String? apiBaseUrl,
     AppThemeType? themeType,
     bool? hasSeenOnboarding,
+    String? locale,
   }) {
     return AppSettings(
       apiBaseUrl: apiBaseUrl ?? this.apiBaseUrl,
       themeType: themeType ?? this.themeType,
       hasSeenOnboarding: hasSeenOnboarding ?? this.hasSeenOnboarding,
+      locale: locale ?? this.locale,
     );
   }
 }

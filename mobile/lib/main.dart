@@ -9,6 +9,9 @@ import 'package:freetier_radar/screens/alerts_screen.dart';
 import 'package:freetier_radar/screens/stack_calculator_screen.dart';
 import 'package:freetier_radar/screens/bookmarks_screen.dart';
 import 'package:freetier_radar/screens/settings_screen.dart';
+import 'package:freetier_radar/screens/assistant_screen.dart';
+import 'package:freetier_radar/l10n/app_strings.dart';
+import 'package:freetier_radar/providers/services_provider.dart';
 import 'package:freetier_radar/screens/onboarding_screen.dart';
 import 'package:freetier_radar/screens/comparison_screen.dart';
 import 'package:freetier_radar/services/local_cache_service.dart';
@@ -46,6 +49,7 @@ class FreeTierRadarApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final locale = ref.watch(settingsProvider).locale;
     return MaterialApp(
       title: 'FreeTier Radar',
       debugShowCheckedModeBanner: false,
@@ -58,18 +62,19 @@ class FreeTierRadarApp extends StatelessWidget {
 }
 
 /// Bottom navigation host with four tabs + settings access.
-class MainNavigationScreen extends StatefulWidget {
+class MainNavigationScreen extends ConsumerStatefulWidget {
   const MainNavigationScreen({super.key});
 
   @override
-  State<MainNavigationScreen> createState() => _MainNavigationScreenState();
+  ConsumerState<MainNavigationScreen> createState() => _MainNavigationScreenState();
 }
 
-class _MainNavigationScreenState extends State<MainNavigationScreen> {
+class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
   int _currentIndex = 0;
 
   final List<Widget> _screens = const [
     HomeScreen(),
+    AssistantScreen(),
     AlertsScreen(),
     StackCalculatorScreen(),
     BookmarksScreen(),
@@ -77,6 +82,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final locale = ref.watch(settingsProvider).locale;
     return Scaffold(
       body: IndexedStack(
         index: _currentIndex,
@@ -101,26 +107,32 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),
-        items: const [
+        type: BottomNavigationBarType.fixed,
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.explore_outlined),
-            activeIcon: Icon(Icons.explore),
-            label: 'Explore',
+            icon: const Icon(Icons.explore_outlined),
+            activeIcon: const Icon(Icons.explore),
+            label: AppStrings.get('explore', locale),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.notifications_outlined),
-            activeIcon: Icon(Icons.notifications),
-            label: 'Alerts',
+            icon: const Icon(Icons.chat_bubble_outline),
+            activeIcon: const Icon(Icons.chat_bubble),
+            label: AppStrings.get('assistant', locale),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.layers_outlined),
-            activeIcon: Icon(Icons.layers),
-            label: 'Stack',
+            icon: const Icon(Icons.notifications_outlined),
+            activeIcon: const Icon(Icons.notifications),
+            label: "Alerts", // We can add alerts to app_strings later
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.bookmark_border),
-            activeIcon: Icon(Icons.bookmark),
-            label: 'Saved',
+            icon: const Icon(Icons.layers_outlined),
+            activeIcon: const Icon(Icons.layers),
+            label: "Stack",
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.bookmark_border),
+            activeIcon: const Icon(Icons.bookmark),
+            label: AppStrings.get('bookmarks', locale),
           ),
         ],
       ),
