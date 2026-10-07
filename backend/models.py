@@ -92,3 +92,16 @@ class DeprecationAlertRead(SQLModel):
     alert_type: str
     summary: str
     detected_at: datetime
+
+class ServiceReport(SQLModel, table=True):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()), primary_key=True)
+    service_id: str = Field(index=True)
+    report_type: str  # e.g., "OUTDATED_PRICING", "BROKEN_LINK", "OTHER"
+    message: str
+    is_resolved: bool = Field(default=False)
+    created_at: datetime = Field(default_factory=_utcnow)
+
+class ReportCreate(SQLModel):
+    service_id: str
+    report_type: str
+    message: str

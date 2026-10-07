@@ -180,6 +180,19 @@ class ApiService {
     }
   }
 
+  /// Submit a community report
+  Future<bool> submitReport(String serviceId, String reportType, String message) async {
+    try {
+      final response = await _dio.post(
+        "/api/v1/reports",
+        data: {"service_id": serviceId, "report_type": reportType, "message": message},
+      );
+      return response.statusCode == 201;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<List<DeprecationAlert>> _fetchAlertsFromCache() async {
     if (cacheService == null) throw const ApiException('Cache service not available');
     final cachedData = await cacheService!.getCachedAlerts();

@@ -15,6 +15,7 @@ import '../models/service_model.dart';
 import '../widgets/service_card.dart';
 import '../widgets/filter_bar.dart';
 import '../theme/app_theme.dart';
+import 'wizard_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -46,6 +47,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final servicesAsyncValue = ref.watch(servicesProvider);
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const WizardScreen())),
+        icon: Icon(Icons.auto_awesome, color: AppTheme.colors.surface),
+        label: Text("Find My Stack", style: TextStyle(color: AppTheme.colors.surface, fontWeight: FontWeight.bold)),
+        backgroundColor: AppTheme.colors.primary,
+      ),
       appBar: AppBar(
         title: Row(
           mainAxisSize: MainAxisSize.min,

@@ -338,6 +338,40 @@ class ServiceDetailModal extends ConsumerWidget {
                           icon: const Icon(Icons.share),
                           label: const Text('Share'),
                         ),
+                        OutlinedButton.icon(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            showDialog(
+                              context: context,
+                              builder: (ctx) => AlertDialog(
+                                backgroundColor: AppTheme.colors.surface,
+                                title: Text("Report Issue", style: TextStyle(color: AppTheme.colors.text)),
+                                content: Text("Is this free tier outdated or incorrect? Let us know so we can update it.", style: TextStyle(color: AppTheme.colors.subtext)),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(ctx),
+                                    child: Text("Cancel", style: TextStyle(color: AppTheme.colors.subtext)),
+                                  ),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(backgroundColor: AppTheme.colors.error),
+                                    onPressed: () async {
+                                      Navigator.pop(ctx);
+                                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Thank you! Report submitted.")));
+                                      try {
+                                        final api = ref.read(apiServiceProvider);
+                                        await api.submitReport(service.id, "OUTDATED", "User reported from app");
+                                      } catch(e) {}
+                                    },
+                                    child: Text("Report as Outdated", style: TextStyle(color: AppTheme.colors.surface)),
+                                  )
+                                ],
+                              )
+                            );
+                          },
+                          icon: const Icon(Icons.report_problem, color: AppTheme.errorRed),
+                          label: const Text('Report', style: TextStyle(color: AppTheme.errorRed)),
+                        
+                        ),
                       ],
                     ),
                     const SizedBox(height: 32),

@@ -18,7 +18,7 @@ from sqlmodel import Session, select, or_, text
 from database import engine, create_db_and_tables, get_session
 from models import (
     ServiceItem, ServiceCategory, ServiceStatus, ServiceItemRead, ServiceItemList,
-    DeprecationAlert, DeprecationAlertRead
+    DeprecationAlert, DeprecationAlertRead, ServiceReport, ReportCreate
 )
 from scrapers.github_freedev_parser import parse_free_for_dev
 from scrapers.targeted_scrapers import run_targeted_scrapers
@@ -282,3 +282,21 @@ async def force_sync(
         "message": "Scrape and sync cycle triggered in background", 
         "timestamp": datetime.now(timezone.utc).isoformat()
     }
+
+@app.post("/api/v1/reports", status_code=201, tags=["Community"])
+@limiter.limit("5/minute")
+def submit_report(
+    request: Request,
+    report: ReportCreate,
+    session: Session = Depends(get_session)
+):
+    """Submit a community report for a service (e.g., outdated pricing, broken links)."""
+    new_report = ServiceReport(
+        service_id=report.service_id,
+        report_type=report.report_type,
+        message=report.message
+    )
+    session.add(new_report)
+    session.commit()
+    logger.info(f"New community report received for service {report.service_id}: {report.report_type}")
+    return {"status": "success", "message": "Report submitted successfully"}
