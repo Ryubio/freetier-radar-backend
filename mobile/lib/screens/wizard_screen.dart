@@ -66,33 +66,33 @@ class _WizardScreenState extends ConsumerState<WizardScreen> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: AppTheme.colors.surface,
-        title: Text('Your Perfect Stack', style: TextStyle(color: AppTheme.colors.text)),
+        backgroundColor: AppTheme.surfaceColor,
+        title: Text('Your Perfect Stack', style: TextStyle(color: AppTheme.textColor)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Based on your needs, we found these free-tier gems:', style: TextStyle(color: AppTheme.colors.subtext)),
+            Text('Based on your needs, we found these free-tier gems:', style: TextStyle(color: AppTheme.subtextColor)),
             const SizedBox(height: 16),
             ...selectedServices.map((s) => ListTile(
-              leading: Icon(Icons.check_circle, color: AppTheme.colors.secondary),
-              title: Text(s.name, style: TextStyle(color: AppTheme.colors.text)),
-              subtitle: Text(s.category.name, style: TextStyle(color: AppTheme.colors.subtext, fontSize: 12)),
+              leading: Icon(Icons.check_circle, color: AppTheme.secondaryGreen),
+              title: Text(s.name, style: TextStyle(color: AppTheme.textColor)),
+              subtitle: Text(s.category.name, style: TextStyle(color: AppTheme.subtextColor, fontSize: 12)),
             ))
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: Text('Close', style: TextStyle(color: AppTheme.colors.primary)),
+            child: Text('Close', style: TextStyle(color: AppTheme.primaryBlue)),
           ),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: AppTheme.colors.primary),
+            style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primaryBlue),
             onPressed: () {
               Navigator.pop(ctx);
               Navigator.pop(context);
             },
-            child: Text('Awesome', style: TextStyle(color: AppTheme.colors.surface)),
+            child: Text('Awesome', style: TextStyle(color: AppTheme.surfaceColor)),
           )
         ],
       )
@@ -108,9 +108,9 @@ class _WizardScreenState extends ConsumerState<WizardScreen> {
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isSelected ? AppTheme.colors.primary.withOpacity(0.1) : AppTheme.colors.surface0,
+          color: isSelected ? AppTheme.primaryBlue.withOpacity(0.1) : AppTheme.surface0Color,
           border: Border.all(
-            color: isSelected ? AppTheme.colors.primary : Colors.transparent,
+            color: isSelected ? AppTheme.primaryBlue : Colors.transparent,
             width: 2,
           ),
           borderRadius: BorderRadius.circular(12),
@@ -118,9 +118,9 @@ class _WizardScreenState extends ConsumerState<WizardScreen> {
         child: Row(
           children: [
             Icon(isSelected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-                color: isSelected ? AppTheme.colors.primary : AppTheme.colors.subtext),
+                color: isSelected ? AppTheme.primaryBlue : AppTheme.subtextColor),
             const SizedBox(width: 12),
-            Text(text, style: TextStyle(color: isSelected ? AppTheme.colors.primary : AppTheme.colors.text, fontSize: 16)),
+            Text(text, style: TextStyle(color: isSelected ? AppTheme.primaryBlue : AppTheme.textColor, fontSize: 16)),
           ],
         ),
       ),
@@ -130,19 +130,19 @@ class _WizardScreenState extends ConsumerState<WizardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.colors.surface,
+      backgroundColor: AppTheme.surfaceColor,
       appBar: AppBar(
-        title: Text('Find My Stack', style: TextStyle(color: AppTheme.colors.text)),
-        backgroundColor: AppTheme.colors.mantle,
-        iconTheme: IconThemeData(color: AppTheme.colors.text),
+        title: Text('Find My Stack', style: TextStyle(color: AppTheme.textColor)),
+        backgroundColor: AppTheme.mantleColor,
+        iconTheme: IconThemeData(color: AppTheme.textColor),
       ),
       body: SafeArea(
         child: Column(
           children: [
             LinearProgressIndicator(
               value: (_currentPage + 1) / 3,
-              backgroundColor: AppTheme.colors.surface0,
-              valueColor: AlwaysStoppedAnimation<Color>(AppTheme.colors.primary),
+              backgroundColor: AppTheme.surface0Color,
+              valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryBlue),
             ),
             Expanded(
               child: PageView(
@@ -156,9 +156,9 @@ class _WizardScreenState extends ConsumerState<WizardScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('What are you building?', style: TextStyle(color: AppTheme.colors.text, fontSize: 24, fontWeight: FontWeight.bold)),
+                        Text('What are you building?', style: TextStyle(color: AppTheme.textColor, fontSize: 24, fontWeight: FontWeight.bold)),
                         const SizedBox(height: 8),
-                        Text('We will recommend the best free-tier tools for your use case.', style: TextStyle(color: AppTheme.colors.subtext)),
+                        Text('We will recommend the best free-tier tools for your use case.', style: TextStyle(color: AppTheme.subtextColor)),
                         const SizedBox(height: 32),
                         _buildOption('Web App (SaaS, Blog)', _projectType, (v) => setState(() => _projectType = v)),
                         _buildOption('Mobile App', _projectType, (v) => setState(() => _projectType = v)),
@@ -173,7 +173,7 @@ class _WizardScreenState extends ConsumerState<WizardScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('What kind of database do you need?', style: TextStyle(color: AppTheme.colors.text, fontSize: 24, fontWeight: FontWeight.bold)),
+                        Text('What kind of database do you need?', style: TextStyle(color: AppTheme.textColor, fontSize: 24, fontWeight: FontWeight.bold)),
                         const SizedBox(height: 32),
                         _buildOption('Relational SQL (Postgres, MySQL)', _dbType, (v) => setState(() => _dbType = v)),
                         _buildOption('NoSQL Document (Mongo, Firebase)', _dbType, (v) => setState(() => _dbType = v)),
@@ -188,7 +188,7 @@ class _WizardScreenState extends ConsumerState<WizardScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('How do you plan to host it?', style: TextStyle(color: AppTheme.colors.text, fontSize: 24, fontWeight: FontWeight.bold)),
+                        Text('How do you plan to host it?', style: TextStyle(color: AppTheme.textColor, fontSize: 24, fontWeight: FontWeight.bold)),
                         const SizedBox(height: 32),
                         _buildOption('Static Frontend (React, Vue, Flutter)', _hostingType, (v) => setState(() => _hostingType = v)),
                         _buildOption('Serverless Functions', _hostingType, (v) => setState(() => _hostingType = v)),
@@ -206,7 +206,7 @@ class _WizardScreenState extends ConsumerState<WizardScreen> {
                 height: 56,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.colors.primary,
+                    backgroundColor: AppTheme.primaryBlue,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
                   onPressed: () {
@@ -217,7 +217,7 @@ class _WizardScreenState extends ConsumerState<WizardScreen> {
                   },
                   child: Text(
                     _currentPage == 2 ? 'Generate Stack' : 'Next',
-                    style: TextStyle(color: AppTheme.colors.surface, fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(color: AppTheme.surfaceColor, fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),

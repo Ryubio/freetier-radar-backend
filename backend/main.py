@@ -1,3 +1,4 @@
+import secrets
 import os
 import sys
 import time
@@ -43,13 +44,16 @@ if not logger.handlers:
 # ---------------------------------------------------------
 # Security & Rate Limiting
 # ---------------------------------------------------------
-SYNC_SECRET_KEY = os.getenv("SYNC_SECRET_KEY", "default-insecure-secret-if-unconfigured")
+# Varsayılan anahtar yok: SYNC_SECRET_KEY ayarlanmamışsa /sync endpoint'i tamamen kapalıdır.
+SYNC_SECRET_KEY = os.getenv("SYNC_SECRET_KEY") or None
 sync_api_key_header = APIKeyHeader(name="X-Sync-Token", auto_error=True)
 
 limiter = Limiter(key_func=get_remote_address)
 
 async def verify_sync_token(api_key: str = Security(sync_api_key_header)):
-    if api_key != SYNC_SECRET_KEY:
+    if not SYNC_SECRET_KEY:
+        raise HTTPException(status_code=503, detail="Sync is disabled: SYNC_SECRET_KEY is not configured")
+    if not secrets.compare_digest(api_key, SYNC_SECRET_KEY):
         raise HTTPException(status_code=403, detail="Invalid or missing sync token")
     return api_key
 

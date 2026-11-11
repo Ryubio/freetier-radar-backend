@@ -49,9 +49,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const WizardScreen())),
-        icon: Icon(Icons.auto_awesome, color: AppTheme.colors.surface),
-        label: Text("Find My Stack", style: TextStyle(color: AppTheme.colors.surface, fontWeight: FontWeight.bold)),
-        backgroundColor: AppTheme.colors.primary,
+        icon: Icon(Icons.auto_awesome, color: AppTheme.surfaceColor),
+        label: Text("Find My Stack", style: TextStyle(color: AppTheme.surfaceColor, fontWeight: FontWeight.bold)),
+        backgroundColor: AppTheme.primaryBlue,
       ),
       appBar: AppBar(
         title: Row(

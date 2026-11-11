@@ -49,7 +49,6 @@ class FreeTierRadarApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final locale = ref.watch(settingsProvider).locale;
     return MaterialApp(
       title: 'FreeTier Radar',
       debugShowCheckedModeBanner: false,

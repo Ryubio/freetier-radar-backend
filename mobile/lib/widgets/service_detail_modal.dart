@@ -344,16 +344,16 @@ class ServiceDetailModal extends ConsumerWidget {
                             showDialog(
                               context: context,
                               builder: (ctx) => AlertDialog(
-                                backgroundColor: AppTheme.colors.surface,
-                                title: Text("Report Issue", style: TextStyle(color: AppTheme.colors.text)),
-                                content: Text("Is this free tier outdated or incorrect? Let us know so we can update it.", style: TextStyle(color: AppTheme.colors.subtext)),
+                                backgroundColor: AppTheme.surfaceColor,
+                                title: Text("Report Issue", style: TextStyle(color: AppTheme.textColor)),
+                                content: Text("Is this free tier outdated or incorrect? Let us know so we can update it.", style: TextStyle(color: AppTheme.subtextColor)),
                                 actions: [
                                   TextButton(
                                     onPressed: () => Navigator.pop(ctx),
-                                    child: Text("Cancel", style: TextStyle(color: AppTheme.colors.subtext)),
+                                    child: Text("Cancel", style: TextStyle(color: AppTheme.subtextColor)),
                                   ),
                                   ElevatedButton(
-                                    style: ElevatedButton.styleFrom(backgroundColor: AppTheme.colors.error),
+                                    style: ElevatedButton.styleFrom(backgroundColor: AppTheme.errorRed),
                                     onPressed: () async {
                                       Navigator.pop(ctx);
                                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Thank you! Report submitted.")));
@@ -362,7 +362,7 @@ class ServiceDetailModal extends ConsumerWidget {
                                         await api.submitReport(service.id, "OUTDATED", "User reported from app");
                                       } catch(e) {}
                                     },
-                                    child: Text("Report as Outdated", style: TextStyle(color: AppTheme.colors.surface)),
+                                    child: Text("Report as Outdated", style: TextStyle(color: AppTheme.surfaceColor)),
                                   )
                                 ],
                               )

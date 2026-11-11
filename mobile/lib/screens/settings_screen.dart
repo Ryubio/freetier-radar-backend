@@ -5,68 +5,6 @@ import '../theme/app_theme.dart';
 import '../l10n/app_strings.dart';
 import '../providers/services_provider.dart';
 
-class SettingsState {
-  final String apiBaseUrl;
-  final String appTheme;
-
-  SettingsState({
-    required this.apiBaseUrl,
-    required this.appTheme,
-  });
-
-  SettingsState copyWith({
-    String? apiBaseUrl,
-    String? appTheme,
-  }) {
-    return SettingsState(
-      apiBaseUrl: apiBaseUrl ?? this.apiBaseUrl,
-      appTheme: appTheme ?? this.appTheme,
-    );
-  }
-}
-
-class SettingsNotifier extends StateNotifier<SettingsState> {
-  SettingsNotifier()
-      : super(SettingsState(
-            apiBaseUrl: 'https://freetier-radar-backend.onrender.com',
-            appTheme: 'Catppuccin Mocha')) {
-    _loadSettings();
-  }
-
-  Future<void> _loadSettings() async {
-    final prefs = await SharedPreferences.getInstance();
-    final url = prefs.getString('api_base_url') ?? 'https://freetier-radar-backend.onrender.com';
-    final theme = prefs.getString('app_theme') ?? 'Catppuccin Mocha';
-    state = state.copyWith(apiBaseUrl: url, appTheme: theme);
-  }
-
-  Future<void> updateApiBaseUrl(String url) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('api_base_url', url);
-    state = state.copyWith(apiBaseUrl: url);
-  }
-
-  Future<void> updateAppTheme(String theme) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('app_theme', theme);
-    state = state.copyWith(appTheme: theme);
-  }
-
-  Future<void> resetSettings() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('api_base_url');
-    await prefs.remove('app_theme');
-    await prefs.remove('bookmarked_services');
-    state = SettingsState(
-        apiBaseUrl: 'https://freetier-radar-backend.onrender.com',
-        appTheme: 'Catppuccin Mocha');
-  }
-}
-
-final settingsProvider =
-    StateNotifierProvider<SettingsNotifier, SettingsState>((ref) {
-  return SettingsNotifier();
-});
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -139,7 +77,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       hintText: 'https://...',
                     ),
                     onChanged: (val) =>
-                        ref.read(settingsProvider.notifier).updateApiBaseUrl(val),
+                        ref.read(settingsProvider.notifier).setBaseUrl(val),
                   ),
                   const SizedBox(height: 16),
                   Row(
@@ -192,15 +130,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           _buildSectionHeader('Appearance'),
           Card(
             child: Column(
-              children: ['Catppuccin Mocha', 'Nord', 'Tokyo Night'].map((theme) {
+              children: ['catppuccin', 'nord', 'tokyoNight'].map((theme) {
                 return RadioListTile<String>(
                   title: Text(theme),
                   value: theme,
-                  groupValue: settings.appTheme,
+                  groupValue: settings.themeType.name,
                   activeColor: AppTheme.primaryBlue,
                   onChanged: (val) {
                     if (val != null) {
-                      ref.read(settingsProvider.notifier).updateAppTheme(val);
+                      ref.read(settingsProvider.notifier).setTheme(AppThemeType.values.firstWhere((e) => e.name == val));
                     }
                   },
                 );
@@ -328,7 +266,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
           TextButton(
             onPressed: () {
-              ref.read(settingsProvider.notifier).resetSettings();
+              /* TODO */
               ref.invalidate(bookmarksProvider);
               Navigator.pop(ctx);
               ScaffoldMessenger.of(context).showSnackBar(

@@ -22,10 +22,18 @@ def test_sync_endpoint_auth_missing():
     response = client.post("/api/v1/sync")
     assert response.status_code in (401, 403)
 
-def test_sync_endpoint_auth_invalid():
+def test_sync_endpoint_auth_invalid(monkeypatch):
+    import main
+    monkeypatch.setattr(main, "SYNC_SECRET_KEY", "configured-secret")
     response = client.post("/api/v1/sync", headers={"X-Sync-Token": "wrong-token"})
     assert response.status_code == 403
     assert response.json() == {"detail": "Invalid or missing sync token"}
+
+def test_sync_endpoint_disabled_without_secret(monkeypatch):
+    import main
+    monkeypatch.setattr(main, "SYNC_SECRET_KEY", None)
+    response = client.post("/api/v1/sync", headers={"X-Sync-Token": "default-insecure-secret-if-unconfigured"})
+    assert response.status_code == 503
 
 def test_sync_endpoint_auth_valid(monkeypatch):
     test_token = "test-secret-key"

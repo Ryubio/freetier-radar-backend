@@ -64,12 +64,12 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
     final locale = ref.watch(settingsProvider).locale;
 
     return Scaffold(
-      backgroundColor: AppTheme.colors.mantle,
+      backgroundColor: AppTheme.mantleColor,
       appBar: AppBar(
-        title: Text(AppStrings.get('assistant', locale), style: TextStyle(color: AppTheme.colors.text)),
-        backgroundColor: AppTheme.colors.surface,
+        title: Text(AppStrings.get('assistant', locale), style: TextStyle(color: AppTheme.textColor)),
+        backgroundColor: AppTheme.surfaceColor,
         elevation: 0,
-        iconTheme: IconThemeData(color: AppTheme.colors.text),
+        iconTheme: IconThemeData(color: AppTheme.textColor),
       ),
       body: Column(
         children: [
@@ -83,7 +83,7 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
                     alignment: Alignment.centerLeft,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Text(AppStrings.get('assistant_typing', locale), style: TextStyle(color: AppTheme.colors.subtext, fontStyle: FontStyle.italic)),
+                      child: Text(AppStrings.get('assistant_typing', locale), style: TextStyle(color: AppTheme.subtextColor, fontStyle: FontStyle.italic)),
                     ),
                   );
                 }
@@ -95,7 +95,7 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
                     margin: const EdgeInsets.symmetric(vertical: 8),
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: msg.isUser ? AppTheme.colors.primary : AppTheme.colors.surface0,
+                      color: msg.isUser ? AppTheme.primaryBlue : AppTheme.surface0Color,
                       borderRadius: BorderRadius.circular(16).copyWith(
                         bottomRight: msg.isUser ? Radius.zero : const Radius.circular(16),
                         bottomLeft: msg.isUser ? const Radius.circular(16) : Radius.zero,
@@ -104,7 +104,7 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
                     child: Text(
                       msg.text,
                       style: TextStyle(
-                        color: msg.isUser ? AppTheme.colors.surface : AppTheme.colors.text,
+                        color: msg.isUser ? AppTheme.surfaceColor : AppTheme.textColor,
                         fontSize: 15,
                       ),
                     ),
@@ -115,18 +115,18 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
           ),
           Container(
             padding: const EdgeInsets.all(16),
-            color: AppTheme.colors.surface,
+            color: AppTheme.surfaceColor,
             child: Row(
               children: [
                 Expanded(
                   child: TextField(
                     controller: _controller,
-                    style: TextStyle(color: AppTheme.colors.text),
+                    style: TextStyle(color: AppTheme.textColor),
                     decoration: InputDecoration(
                       hintText: AppStrings.get('assistant_hint', locale),
-                      hintStyle: TextStyle(color: AppTheme.colors.subtext),
+                      hintStyle: TextStyle(color: AppTheme.subtextColor),
                       filled: true,
-                      fillColor: AppTheme.colors.surface0,
+                      fillColor: AppTheme.surface0Color,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(24),
                         borderSide: BorderSide.none,
@@ -138,9 +138,9 @@ class _AssistantScreenState extends ConsumerState<AssistantScreen> {
                 ),
                 const SizedBox(width: 12),
                 CircleAvatar(
-                  backgroundColor: AppTheme.colors.primary,
+                  backgroundColor: AppTheme.primaryBlue,
                   child: IconButton(
-                    icon: Icon(Icons.send, color: AppTheme.colors.surface),
+                    icon: Icon(Icons.send, color: AppTheme.surfaceColor),
                     onPressed: _sendMessage,
                   ),
                 )
